@@ -5,11 +5,11 @@ copilot-mode: False
 research-topic: "Your goal is to write a comprehensive paper about Building Safe and Beneficial AI Agents based on chapter 4 of the research titled 'Advances and Challenges in Foundation Agents: From Brain-Inspired Intelligence to Evolutionary, Collaborative, and Safe Systems' (arXiv ID: 2504.01990). The paper should clearly explain the key advances, highlight the main challenges, and discuss future research directions in the field of foundation agents. Use clear language, structured sections, and include relevant examples or technical details to illustrate important points."
 
 # Here you can put your OpenAI API key--if you don't have one or OpenAI doesn't work for you, you can also instead use `deepseek-api-key`
-api-key: "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"
+api-key: ""
 # or deepseek-api-key: "DEEPSEEK-API-KEY-HERE"
-groq-api-key: "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"
-gemini-api-key: "AIzaSyBx2ew3gzffORZhAssvOY4UUDLmhylEx4g"
-openrouter-api-key: "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"
+groq-api-key: ""
+gemini-api-key: ""
+openrouter-api-key: ""
 # Agent Laboratory backend
 llm-backend: "gemini-2.5-flash"
 # Literature review backend
