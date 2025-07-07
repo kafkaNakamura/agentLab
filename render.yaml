@@ -3,7 +3,9 @@ services:
     name: agentlab-streamlit
     env: python
     plan: free
-    buildCommand: pip install --upgrade pip setuptools wheel build && pip install -r requirements.txt
+    buildCommand: |
+      pip install --upgrade pip setuptools wheel build
+      pip install -r requirements.txt
     startCommand: streamlit run langchain.py --server.port=10000 --server.address=0.0.0.0
     envVars:
       - key: OPENAI_API_KEY
