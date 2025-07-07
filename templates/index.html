@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Research Paper Generator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .sidebar {
+            background-color: #f8f9fa;
+            padding: 20px;
+            height: 100vh;
+        }
+        .main-content {
+            padding: 20px;
+        }
+        textarea {
+            min-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <div class="col-md-3 sidebar">
+                <h2>Configuration Management</h2>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="yaml_location" class="form-label">YAML config location</label>
+                        <input type="text" class="form-control" id="yaml_location" name="yaml_location" value="{{ session.get('yaml_location', DEFAULT_YAML) }}">
+                    </div>
+                    <button type="submit" class="btn btn-primary" name="load_config">Load Config</button>
+                </form>
+
+                <hr>
+                <h2>Instructions</h2>
+                <ol>
+                    <li>Load your YAML config file</li>
+                    <li>Edit the configuration as needed</li>
+                    <li>Save your changes</li>
+                    <li>Generate your research paper</li>
+                </ol>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-md-9 main-content">
+                <h1>Research Paper Generator</h1>
+                <p>Configure and generate research papers using AI agents</p>
+
+                {% if error %}
+                    <div class="alert alert-danger">{{ error }}</div>
+                {% endif %}
+
+                <!-- Edit Configuration Section -->
+                <h2>Edit Configuration</h2>
+                {% if session.get('config') %}
+                    <form method="POST">
+                        <div class="mb-3">
+                            <label for="edited_yaml" class="form-label">Edit YAML configuration</label>
+                            <textarea class="form-control" id="edited_yaml" name="edited_yaml" rows="20">{{ session.get('yaml_content', '') }}</textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary" name="save_config">Save Configuration</button>
+                    </form>
+                {% else %}
+                    <div class="alert alert-warning">Please load a configuration file first using the sidebar.</div>
+                {% endif %}
+
+                <!-- Generate Research Paper Section -->
+                <h2 class="mt-4">Generate Research Paper</h2>
+                {% if session.get('config') %}
+                    <div class="mb-3">
+                        <label class="form-label">Research Topic</label>
+                        <div class="card">
+                            <div class="card-body">
+                                {{ session.get('research_topic', '') }}
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST">
+                        <button type="submit" class="btn btn-secondary mb-3" name="refine_topic">Refine Topic with AI</button>
+                        <button type="submit" class="btn btn-primary mb-3" name="generate_paper">Generate Research Paper</button>
+                    </form>
+
+                    {% if session.get('paper_generated', False) %}
+                        <div class="alert alert-success">Research paper generated successfully!</div>
+                        
+                        <h3>Literature Review</h3>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                {{ session['lab']['lit_review_sum'] }}
+                            </div>
+                        </div>
+                        
+                        <h3>Research Plan</h3>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                {{ session['lab']['plan'] }}
+                            </div>
+                        </div>
+                        
+                        <h3>Experimental Results</h3>
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                {{ session['lab']['exp_results'] }}
+                            </div>
+                        </div>
+                        
+                        {% if session.get('pdf_path') and os.path.exists(session['pdf_path']) %}
+                            <a href="{{ url_for('download_pdf') }}" class="btn btn-success">Download PDF</a>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

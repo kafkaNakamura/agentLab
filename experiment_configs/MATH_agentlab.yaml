@@ -1,0 +1,78 @@
+# If you want to have user input or be a human-in-the-loop
+copilot-mode: False
+
+# Here is the research prompt. If num-papers-to-write > 1, you can treat this as a "research direction" otherwise it can be *very* specific and can be treated as a full research idea
+research-topic: "Your goal is to write a comprehensive paper about Building Safe and Beneficial AI Agents based on chapter 4 of the research titled 'Advances and Challenges in Foundation Agents: From Brain-Inspired Intelligence to Evolutionary, Collaborative, and Safe Systems' (arXiv ID: 2504.01990). The paper should clearly explain the key advances, highlight the main challenges, and discuss future research directions in the field of foundation agents. Use clear language, structured sections, and include relevant examples or technical details to illustrate important points."
+
+# Here you can put your OpenAI API key--if you don't have one or OpenAI doesn't work for you, you can also instead use `deepseek-api-key`
+api-key: "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"
+# or deepseek-api-key: "DEEPSEEK-API-KEY-HERE"
+groq-api-key: "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"
+gemini-api-key: "AIzaSyBx2ew3gzffORZhAssvOY4UUDLmhylEx4g"
+openrouter-api-key: "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"
+# Agent Laboratory backend
+llm-backend: "gemini-2.5-flash"
+# Literature review backend
+lit-review-backend: "gemini-2.5-flash"
+
+# Base language
+language: "English"
+
+# Number of arxiv papers to lit review
+num-papers-lit-review: 5
+# Total number of papers to write in sequence
+num-papers-to-write: 1
+# Do you want to run multiple agent labs in parallel?
+parallel-labs: False
+
+# Total mle-solver steps per lab
+mlesolver-max-steps: 1
+# Total paper-solver steps per lab
+papersolver-max-steps: 5
+# The lab index for this lab (used for parallel runs)
+lab-index: 1
+# If you want to load an existing save
+load-existing: False
+# If fail, run exception?
+except-if-fail: False
+# Compile latex into PDFs during paper-solver
+compile-latex: False
+
+# Task notes
+task-notes:
+  plan-formulation:
+    - 'Please use the paper https://arxiv.org/abs/2504.01990 as the main focus.'
+    - 'Write about chapter 4 of the paper Building Safe and Beneficial AI Agents.'
+    - 'This topic is located in part 4 of the paper i provided.'
+    - 'You can use the paper to guide your research and experiments.'
+    - 'You should write about Agent Intrinsic Safety: Threats on AI Brain, Agent Intrinsic Safety: Threats on Non-Brain Modules'
+    - 'Also write about Superalignment and Safety Scaling Law in AI Agents, Concluding Remarks and Future Outlook'
+    - 'The title and focus of the paper should be "Building Safe and Beneficial AI Agents".'
+    - 'Minimum 20 page of substantive theoretical content'
+#     - 'You must evaluate on the entire 500 test questions of MATH'
+#     - 'Your plan should be a novel prompting technique'
+#     - 'Your evalution shound aim to get state-of-the-art performance on the MATH dataset using prompt a novel prompting idea'
+    - "DO NOT PLAN FOR TOO LONG. Submit your plan soon."
+#   data-preparation:
+#     - 'Please use current LLM for your experiments'
+#     - 'You must evaluate on the entire 500 test questions of MATH'
+#     - 'Here is a sample code you can use to load MATH\nfrom datasets import load_dataset\nMATH_test_set = load_dataset("HuggingFaceH4/MATH-500")["test"]'
+#   running-experiments:
+#     - "For all strings you instantiate you must use triple quotes (''')"
+#     - 'Please use current LLM for your experiments'
+#     - 'Do not try to obtain baseline accuracy or any comparison points. The baseline performance of current LLM on MATH-500 is 70.2%'
+#     - 'You can just use the query_gpt4omini(prompt=prompt, system=system_prompt) to prompt current LLM. You can also access temperature by setting the temperature value query_gpt4omini(prompt=prompt, system=system_prompt, temperature=0.5) for example.'
+#     - 'You must evaluate on the entire 500 test questions of MATH-500'
+#     - "You should come up with a plan for ONE experiment aimed at maximizing performance on MATH using prompting techniques"
+#     - "Make sure to use is_equiv() to evaluate if two answers are equivalent."
+#     - 'Use the following code to inference current LLM\nresponse = query_gpt4omini(prompt=prompt, system=system_prompt)'
+#     - "Your code should parallelize inference. Make sure to write parallelized code."
+#     - "YOU MUST MAKE YOUR CODE PARALLELIZED."
+#     - "Create very thoughtful figures, that would make a good research study."
+#     - 'You have access to only current LLM'
+#     - 'Here is some sample code to evaluate on MATH:\nimport multiprocessing\nimport concurrent.futures\nfrom datasets import load_dataset\n\ndef process_example(example):\n    problem = example["problem"]\n    solution = example["solution"]\n    true_answer = remove_boxed(last_boxed_only_string(solution))\n    prompt = f"""Solve the following math problem and provide your final answer enclosed in a LaTeX \\boxed{{...}} command.\n\nProblem: {problem}\n\nFinal Answer:"""\n    response = query_gpt4omini(prompt=prompt, system="You are a skilled mathematician.")\n    llm_answer = remove_boxed(last_boxed_only_string(response))\n    correct = is_equiv(llm_answer, true_answer)\n    return llm_answer, true_answer, correct\n\ndef main():\n    math_test_set = load_dataset("HuggingFaceH4/MATH-500")["test"]\n    total, correct_count = 0, 0\n    max_workers = multiprocessing.cpu_count()\n    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:\n        futures = [executor.submit(process_example, example) for example in math_test_set]\n        for future in concurrent.futures.as_completed(futures):\n            try: llm_answer, true_answer, correct = future.result()\n            except Exception: continue\n            total += 1\n            if correct: correct_count += 1\n            print(f"Step: {total}, LLM answer: {llm_answer}, True answer: {true_answer}, Accuracy: {(correct_count / total) * 100:.2f}%")\n    print(f"Complete, final accuracy: {(correct_count / total) * 100:.2f}%")\n\nif __name__ == "__main__":\n    main()'
+#     - 'Generate figures with very colorful and artistic design'
+  results-interpretation:
+    - 'The research paper should closely follow the structure of part 4 of the paper Advances and Challenges in Foundation Agents: From Brain-Inspired Intelligence to Evolutionary, Collaborative, and Safe Systems .This is from the paper id 2504.01990'
+  report-writing:
+    - 'The research paper should closely follow the structure of part 4 of the paper Advances and Challenges in Foundation Agents: From Brain-Inspired Intelligence to Evolutionary, Collaborative, and Safe Systems .This is from the paper id 2504.01990'
